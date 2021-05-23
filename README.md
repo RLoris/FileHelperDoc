@@ -15,7 +15,7 @@
 
 ![Nodes](./assets/node10hd.png)
 
-[Link to the plugin in the marketplace]()
+[Link to the plugin in the marketplace](https://www.unrealengine.com/marketplace/en-US/product/bec5be3d587f4ff49a61d45d0e81e4c0)
 
 # Documentation
 
@@ -154,7 +154,7 @@ These nodes allows you to encode/decode content from/to base64
 
 ![Config](./assets/node9hd.png)
 
-    Note: These nodes helps to read/write configuration files (*.ini), you can pass the following variables to these function (Bool, Int, Double, Float, String, Text, Array(String), Rotator, Vector, LinearColor, Vector4, Vector2D) anything else will fail, keep in mind that a restart of the engine/game is needed for these changes to be taken into account !
+    Note: These nodes helps to read/write configuration files (*.ini), you can pass the following variables to these function (Bool, Int, Double, Float, String, Array(String), Rotator, Vector, LinearColor, Vector4, Vector2D) anything else will fail, keep in mind that a restart of the engine/game is needed for these changes to be taken into account !
 
 | Node | Inputs | Outputs | Note |
 | ---- | ------ | ------- | ---- |
