@@ -46,8 +46,8 @@
 | WriteLineFile | Path(String), Content(Array(String)), Append(Bool), Force(Bool) | Success(Bool), Error(Text) | Writes lines into a file |
 | ReadByteFile | Path(String) | Success(Bool), Output(Array(Byte)) | Reads binary content from a file |
 | WriteByteFile | Path(String), Content(Array(Byte)), Append(Bool), Force(Bool) | Success(Bool), Error(Text) | Writes binary content to a file |
-| WriteCSVFile | Path(String), Headers(Array(String)), Data(Array(String)), Delimiter(String), Force(Bool) | Success(Bool), Total(Int) | Writes csv headers and datas to a file, delimiter must be of length 1 (; or ,) |
-| ReadCSVFile | Path(String), Delimiter(String), HeaderFirst(Bool) | Success(Bool), Headers(Array(String)), Data(Array(String)), Total(Int) | Reads csv headers and data from a file, delimiter must be of length 1 (; or ,) |
+| WriteCSVFile | Path(String), Headers(Array(String)), Data(Array(String)), Force(Bool) | Success(Bool), Total(Int) | Writes csv headers and datas to a file, delimiter will be , |
+| ReadCSVFile | Path(String), HeaderFirst(Bool) | Success(Bool), Headers(Array(String)), Data(Array(String)), Total(Int) | Reads csv headers and data from a file, delimiter must be , |
 
 <br>
 
@@ -74,8 +74,8 @@ These nodes allows you to encode/decode content from/to base64
 
 | Node | Inputs | Outputs | Note |
 | ---- | ------ | ------- | ---- |
-| StringToCSV | Content(String), Delimiter(String), HeaderFirst(Bool) | Success(Bool), Headers(Array(String)), Data(Array(String)), Total(Int) | Extracts headers, data from csv string, delimiter must be of length 1 (; or ,) |
-| CSVToString | Headers(Array(String)), Data(Array(String)), Delimiter(String) | Success(Bool), Result(String), Total(Int) | Converts headers, data array into a csv string, delimiter must be of length 1 (; or ,) |
+| StringToCSV | Content(String), HeaderFirst(Bool) | Success(Bool), Headers(Array(String)), Data(Array(String)), Total(Int) | Extracts headers, data from csv string, delimiter must be , |
+| CSVToString | Headers(Array(String)), Data(Array(String)) | Success(Bool), Result(String), Total(Int) | Converts headers, data array into a csv string, delimiter will be , |
 
 <br>
 
