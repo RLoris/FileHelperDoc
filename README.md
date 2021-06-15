@@ -83,7 +83,9 @@ These nodes allows you to encode/decode content from/to base64
 
 ![Serialization](./assets/node4hd.png)
 
-    Node: Please provide only struct (not array of struct, not map of struct, not set of struct) to these functions, you can put maps, sets, array in the struct you wish to export, it will work, you can also put any other object, it will get serialized and when deserializing the object will be created and available as expected
+    Note: Please provide only struct (not array of struct, not map of struct, not set of struct) to these functions, you can put maps, sets, array in the struct you wish to export, it will work, you can also put any other object, it will get serialized and when deserializing the object will be created and available as expected
+
+    Do not use fields with withespaces or special characters in your structures, they will get serialized but you won't be able to deserialize them !
 
 | Node | Inputs | Outputs | Note |
 | ---- | ------ | ------- | ---- |
@@ -140,6 +142,8 @@ These nodes allows you to encode/decode content from/to base64
 ![Datatable](./assets/node8hd.png)
 
     Note: You need to know the correct row struct in order to reimport the datatable content correctly
+
+    Do not use fields with withespaces or special characters in your structures, they will get exported but you won't be able to import them back !
 
 | Node | Inputs | Outputs | Note |
 | ---- | ------ | ------- | ---- |
