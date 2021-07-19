@@ -83,16 +83,18 @@ These nodes allows you to encode/decode content from/to base64
 
 ![Serialization](./assets/node4hd.png)
 
-    Note: Please provide only struct (not array of struct, not map of struct, not set of struct) to these functions, you can put maps, sets, array in the struct you wish to export, it will work, you can also put any other object, it will get serialized and when deserializing the object will be created and available as expected
-
     Do not use fields with withespaces or special characters in your structures, they will get serialized but you won't be able to deserialize them !
+
+    Note v1.2 : You can now provide (map, array, set, object, struct) and it will get (de)serialized, do not use scalar types like string, numeric, boolean...
+    
+    Note v1.1 and minor : Please provide only struct (not array of struct, not map of struct, not set of struct) to these functions, you can put maps, sets, array in the struct you wish to export, it will work, you can also put any other object, it will get serialized and when deserializing the object will be created and available as expected
 
 | Node | Inputs | Outputs | Note |
 | ---- | ------ | ------- | ---- |
 | StructToXML | InStruct(AnyStruct) | Success(Bool), Xml(String) |  Converts any type of struct into XML string |
-| XMLToStruct | Xml(String), OutStruct(AnyStruct) | Success(Bool), Total(Int) | Converts an XML string back into the input struct provided, returns the total fields recovered |
+| XMLToStruct | Xml(String), OutStruct(AnyStruct) | Success(Bool) | Converts an XML string back into the input struct provided, returns whether the parsing was successful carried |
 | StructToJson | InStruct(AnyStruct) | Success(Bool), Json(String) | Converts any type of struct into JSON string |
-| JsonToStruct | Json(String), OutStruct(AnyStruct) | Success(Bool), Total(Int) | Converts a json string back into the input struct provided, returns the total fields recovered |
+| JsonToStruct | Json(String), OutStruct(AnyStruct) | Success(Bool) | Converts a json string back into the input struct provided, returns whether the parsing was successful carried |
 
 <br>
 
