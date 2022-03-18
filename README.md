@@ -2,12 +2,12 @@
 
 ![FileHelper](./assets/thumbnail.png)
 
-- UE4 Plugin to handle files operations
+- UE4 Plugin to handle file operations
 - This is a blueprint library plugin
-- It exposes 50+ functions to handle various files format and file system operations
-- Allows you to easily serialize a custom struct to JSON / XML and deserialize it back to a struct
+- It exposes 50+ functions to handle various file formats and file system operations
+- Allows you to easily serialize a custom struct to JSON or XML and deserialize it back to a struct
 - Allows you to read/write .ini configuration files
-- Allows you to export/import a datatable from/to Json or CSV
+- Allows you to export/import a datatable from/to JSON or CSV
 - Take screenshots and load them into textures
 - Can be used in any blueprint
 
@@ -46,8 +46,8 @@
 | WriteLineFile | Path(String), Content(Array(String)), Append(Bool), Force(Bool) | Success(Bool), Error(Text) | Writes lines into a file |
 | ReadByteFile | Path(String) | Success(Bool), Output(Array(Byte)) | Reads binary content from a file |
 | WriteByteFile | Path(String), Content(Array(Byte)), Append(Bool), Force(Bool) | Success(Bool), Error(Text) | Writes binary content to a file |
-| WriteCSVFile | Path(String), Headers(Array(String)), Data(Array(String)), Force(Bool) | Success(Bool), Total(Int) | Writes csv headers and datas to a file, delimiter will be , |
-| ReadCSVFile | Path(String), HeaderFirst(Bool) | Success(Bool), Headers(Array(String)), Data(Array(String)), Total(Int) | Reads csv headers and data from a file, delimiter must be , |
+| WriteCSVFile | Path(String), Headers(Array(String)), Data(Array(String)), Force(Bool) | Success(Bool), Total(Int) | Writes CSV headers and data to a file, delimiter will be ',' |
+| ReadCSVFile | Path(String), HeaderFirst(Bool) | Success(Bool), Headers(Array(String)), Data(Array(String)), Total(Int) | Reads CSV headers and data from a file, delimiter must be ',' |
 
 <br>
 
@@ -63,8 +63,8 @@ These nodes allows you to encode/decode content from/to base64
 | ---- | ------ | ------- | ---- |
 | StrToBase64 | Source(String) | Result(String) | Encodes a string to a base64 string |
 | StrFromBase64 | Base64Str(String) | Success(Bool), Result(String) | Decodes a string from a base64 string |
-| BytesToBase64 | Source(Array(Byte)) | Result(String) | Encodes a binary content to a base64 string |
-| BytesFromBase64 | Base64Str(String) | Success(Bool), Result(Array(Byte)) | Decodes a binary content from a base64 string |
+| BytesToBase64 | Source(Array(Byte)) | Result(String) | Encodes binary content to a base64 string |
+| BytesFromBase64 | Base64Str(String) | Success(Bool), Result(Array(Byte)) | Decodes binary content from a base64 string |
  
 <br>
 
@@ -74,8 +74,8 @@ These nodes allows you to encode/decode content from/to base64
 
 | Node | Inputs | Outputs | Note |
 | ---- | ------ | ------- | ---- |
-| StringToCSV | Content(String), HeaderFirst(Bool) | Success(Bool), Headers(Array(String)), Data(Array(String)), Total(Int) | Extracts headers, data from csv string, delimiter must be , |
-| CSVToString | Headers(Array(String)), Data(Array(String)) | Success(Bool), Result(String), Total(Int) | Converts headers, data array into a csv string, delimiter will be , |
+| StringToCSV | Content(String), HeaderFirst(Bool) | Success(Bool), Headers(Array(String)), Data(Array(String)), Total(Int) | Extracts headers, data from a CSV string, delimiter must be ',' |
+| CSVToString | Headers(Array(String)), Data(Array(String)) | Success(Bool), Result(String), Total(Int) | Converts headers, data array into a CSV string, delimiter will be ',' |
 
 <br>
 
@@ -83,18 +83,18 @@ These nodes allows you to encode/decode content from/to base64
 
 ![Serialization](./assets/node4hd.png)
 
-    Do not use fields with withespaces or special characters in your structures, they will get serialized but you won't be able to deserialize them !
+    Do not use fields with whitespaces or special characters in your structures, they will get serialized but you won't be able to deserialize them!
 
     Note v1.2 : You can now provide (map, array, set, object, struct) and it will get (de)serialized, do not use scalar types like string, numeric, boolean...
     
-    Note v1.1 and minor : Please provide only struct (not array of struct, not map of struct, not set of struct) to these functions, you can put maps, sets, array in the struct you wish to export, it will work, you can also put any other object, it will get serialized and when deserializing the object will be created and available as expected
+    Note v1.1 and minor : Please provide only a struct (not an array of struct, a map of struct or a set of struct) to these functions, you can put maps, sets, arrays into the struct you wish to export, it will work, you can also put any other object, it will get serialized and when deserializing the object will be created and available as expected
 
 | Node | Inputs | Outputs | Note |
 | ---- | ------ | ------- | ---- |
-| StructToXML | InStruct(AnyStruct) | Success(Bool), Xml(String) |  Converts any type of struct into XML string |
-| XMLToStruct | Xml(String), OutStruct(AnyStruct) | Success(Bool) | Converts an XML string back into the input struct provided, returns whether the parsing was successful carried |
-| StructToJson | InStruct(AnyStruct) | Success(Bool), Json(String) | Converts any type of struct into JSON string |
-| JsonToStruct | Json(String), OutStruct(AnyStruct) | Success(Bool) | Converts a json string back into the input struct provided, returns whether the parsing was successful carried |
+| StructToXML | InStruct(AnyStruct) | Success(Bool), Xml(String) |  Converts any type of struct into an XML string |
+| XMLToStruct | Xml(String), OutStruct(AnyStruct) | Success(Bool) | Converts an XML string back into the input struct provided, returns whether the parsing was successfully carried |
+| StructToJson | InStruct(AnyStruct) | Success(Bool), Json(String) | Converts any type of struct into a JSON string |
+| JsonToStruct | Json(String), OutStruct(AnyStruct) | Success(Bool) | Converts a JSON string back into the input struct provided, returns whether the parsing was successfully carried |
 
 <br>
 
@@ -114,7 +114,7 @@ These nodes allows you to encode/decode content from/to base64
 | GetReadOnlyFlag | Path(String) | Result(Bool) | Gets the read only property on a file, if the file system supports it |
 | GetFileSize | Path(String) | Size(Int64) | Gets the size of a file on the file system in bytes |
 | ListDirectory | Path(String), Pattern(String), ShowFile(Bool), ShowDirectory(Bool), Recursive(Bool) | Result(Bool), Nodes(Array(String)) | Lists all nodes on that path, file or directory, if pattern (regex) is not empty, returns only the one that matches it, can search recursively |
-| MakeDirectory | Path(String), Recursive(Bool) | Result(Bool) | Creates new directory, can work recursively |
+| MakeDirectory | Path(String), Recursive(Bool) | Result(Bool) | Creates a new directory, can work recursively |
 | RemoveDirectory | Path(String), Recursive(Bool) | Result(Bool) | Removes a directory, if it is not empty, check the recursive option |
 | CopyDirectory | Source(String), Dest(String) | Result(Bool) | Copies the content of a directory to a destination path, overwrites existing content |
 | MoveDirectory | Source(String), Dest(String) | Result(Bool) | Moves the content of a directory to a destination path, overwrites existing content |
@@ -149,10 +149,10 @@ These nodes allows you to encode/decode content from/to base64
 
 | Node | Inputs | Outputs | Note |
 | ---- | ------ | ------- | ---- |
-| DataTableToCSV | Table(DataTable) | Result(Bool), Output(String) | Converts a datatable to csv string |
-| CSVToDataTable | Input(String), RowStruct(AnyStruct) | Result(Bool), Table(DataTable) | Converts a csv string to datatable using the specified struct as row model | 
-| DataTableToJSON | Table(DataTable) | Result(Bool), Output(String) | Converts a datatable to json string |
-| JSONToDataTable | Input(String), RowStruct(AnyStruct) | Result(Bool), Table(DataTable) | Converts a json string to datatable using the specified struct as row model |
+| DataTableToCSV | Table(DataTable) | Result(Bool), Output(String) | Converts a datatable to a CSV string |
+| CSVToDataTable | Input(String), RowStruct(AnyStruct) | Result(Bool), Table(DataTable) | Converts a CSV string to datatable using the specified struct as the row model | 
+| DataTableToJSON | Table(DataTable) | Result(Bool), Output(String) | Converts a datatable to a JSON string |
+| JSONToDataTable | Input(String), RowStruct(AnyStruct) | Result(Bool), Table(DataTable) | Converts a JSON string to a datatable using the specified struct as the row model |
 
 <br>
 
@@ -164,6 +164,6 @@ These nodes allows you to encode/decode content from/to base64
 
 | Node | Inputs | Outputs | Note |
 | ---- | ------ | ------- | ---- |
-| ReadConfig | Filepath(String), Section(String), Key(String), SingleLineArrayRead(Bool), OutValue(AnyStruct) | Result(Bool) | Reads a config file and extracts the section->key value into OutValue (can be any type mentionned earlier), check SingleLineArrayRead if you know the value is an array on a single line in the file else uncheck it |
+| ReadConfig | Filepath(String), Section(String), Key(String), SingleLineArrayRead(Bool), OutValue(AnyStruct) | Result(Bool) | Reads a config file and extracts the section->key value into OutValue (can be any type mentioned earlier), check SingleLineArrayRead if you know the value is an array on a single line in the file, else uncheck it |
 | WriteConfig | Filepath(String), Section(String), Key(String), SingleLineArrayWrite(Bool), Value(AnyStruct) | Result(Bool) | Write a config file value at the section->key, creates the file if not found, check SingleLineArrayWrite to write an array on a single line instead of multiple lines |
 | RemoveCongig | Filepath(String), Section(String), Key(String) | Result(Bool) | Removes the value associated with section->key in the file |
