@@ -1,169 +1,186 @@
 # FileHelper
 
-![FileHelper](./assets/thumbnail.png)
+<br>
 
-- UE4 Plugin to handle file operations
-- This is a blueprint library plugin
-- It exposes 50+ functions to handle various file formats and file system operations
-- Allows you to easily serialize a custom struct to JSON or XML and deserialize it back to a struct
+# About
+
+![thumbnail](./assets/thumbnail.png)
+
+- UE plugin handling files operations on various platforms 
+- Handle text/binary files on the local file system
 - Allows you to read/write .ini configuration files
 - Allows you to export/import a datatable from/to JSON or CSV
-- Take screenshots and load them into textures
-- Can be used in any blueprint
+- Allows to take screenshots, save and load them into textures
+- It exposes easy to use blueprint functions to handle files in your project
 
 <br>
+
+# Setup
 
 ![Nodes](./assets/node10hd.png)
 
-[Link to the plugin in the marketplace](https://www.unrealengine.com/marketplace/en-US/product/bec5be3d587f4ff49a61d45d0e81e4c0)
+1. [Get the plugin on the marketplace](https://www.unrealengine.com/marketplace/en-US/product/file-helper-bp-library) and install the plugin for the engine version you wish to use
+2. Create or open an unreal engine project with a supported version
+3. In the editor, go to Edit/Plugins, search for the plugin, check the box to enable it and restart the editor
+4. When a new plugin version is available, go to your Epic Games Launcher, under Unreal Engine/Library, below the engine version, you will find your installed plugins, find the plugin and click on update, then wait for it to finish and restart your editor
+
+<br>
+
+# Support
+
+### Bugs/Issues
+
+If you encounter issues with this plugin, you **should** report it, to do so, in the editor, go to Edit/Plugins, search for this plugin, click on the plugin support button, this will open your browser and navigate to the plugin issue form where you need to fill in all the relevant details about your issue, this will help me investigate and reproduce it on my own in order to fix it. Be precise and give as many details as you can. Once solved, a new plugin version will be submitted to the marketplace, update the plugin and you are good to go. **Due to epic marketplace limitations, I can only patch/update this plugin for the last 3 engine version, older engine versions will not be supported anymore.**
+
+### Feature requests
+
+If you want a new feature relevant to this plugin use case, you can submit a request in the [plugin marketplace question page](https://www.unrealengine.com/marketplace/en-US/product/file-helper-bp-library/questions). I **may** add this new feature in a future plugin version.
+
+<br>
 
 # Documentation
 
+_Screenshots may differ from the latest plugin version, some features may have evolved or have been removed if deprecated._
+
 <br>
 
-# Paths
+### Path
 
-![Paths](./assets/node1hd.png)
+![Path](./assets/node1hd.png)
+
+_Get the relevant folder path for the engine and project_
+
+**FProjectPath** is a struct used to read all the project absolute related paths like Directory, Config, Content, Intermediate, Log, Mods, Plugins, Saved, User, PersistentDownload, PlatformExtensions
+
+**FEnginePath** is a struct used to read all the engine absolute related paths like Directory, Config, Content, Intermediate, Plugins, Saved, User, DefaultLayout, PlatformExtensions, UserLayout
 
 | Node | Inputs | Outputs | Note |
 | ---- | ------ | ------- | ---- |
-| GetEngineDirectories | void | Struct(FEnginePath) | Returns all the engine related paths |
-| GetProjectDirectories | void | Struct(FProjectPath) | Returns all the project related paths |
+| GetEngineDirectories | void | Struct(FEnginePath) | Returns all the engine absolute related paths |
+| GetProjectDirectories | void | Struct(FProjectPath) | Returns all the project absolute related paths |
 
 <br>
 
-# Files
+### File IO
 
 ![file](./assets/node2hd.png)
 
-    Note: Be carefull using these nodes, you are accessing the file system of the user's computer, ensure your code is working as intended before shipping
+_Be carefull using these nodes, you are accessing the file system of the user's computer, ensure your code is working as intended before shipping_
+
+_Make sure you have asked the user permission to access their file system, on some OS read/write restrictions might occur_
 
 | Node | Inputs | Outputs | Note |
 | ---- | ------ | ------- | ---- |
-| ReadTextFile | Path(String) | Success(Bool), Output(String) | Reads the whole content of a text file |
-| WriteTextFile | Path(String), Content(String), Append(Bool), Force(Bool) | Success(Bool), Error(Text) | Writes text content into a file |
-| ReadLineFile | Path(String), Pattern(String) | Success(Bool), Output(Array(String)) | Reads lines of a file, if you specify a pattern (regex), reads only the lines that matches this pattern |
-| WriteLineFile | Path(String), Content(Array(String)), Append(Bool), Force(Bool) | Success(Bool), Error(Text) | Writes lines into a file |
-| ReadByteFile | Path(String) | Success(Bool), Output(Array(Byte)) | Reads binary content from a file |
-| WriteByteFile | Path(String), Content(Array(Byte)), Append(Bool), Force(Bool) | Success(Bool), Error(Text) | Writes binary content to a file |
-| WriteCSVFile | Path(String), Headers(Array(String)), Data(Array(String)), Force(Bool) | Success(Bool), Total(Int) | Writes CSV headers and data to a file, delimiter will be ',' |
-| ReadCSVFile | Path(String), HeaderFirst(Bool) | Success(Bool), Headers(Array(String)), Data(Array(String)), Total(Int) | Reads CSV headers and data from a file, delimiter must be ',' |
+| ReadTextFile | Path(String) | Success(Bool), Output(String) | Reads the whole content of a text file if it exists |
+| WriteTextFile | Path(String), Text(String), Append(Bool), Force(Bool) | Success(Bool), Error(String) | Writes text content into a file, creates the file when not found or appends to it if it exists, you can force to overwrite it |
+| ReadLineFile | Path(String), Pattern(String) | Success(Bool), Lines(Array(String)) | Reads lines of a file if it exists, if you specify a regex pattern, reads only the lines that matches this pattern |
+| ReadLineRangeFile | Path(String), StartIndex(Int), EndIndex(Int) | Success(Bool), Lines(Array(String)) | Reads lines of a file if it exists, if you specify a range, reads only the lines between the range |
+| WriteLineFile | Path(String), Text(Array(String)), Append(Bool), Force(Bool) | Success(Bool), Error(String) | Writes lines into a file, creates the file when not found or appends to it if it exists, you can force to overwrite it |
+| ReadByteFile | Path(String) | Success(Bool), Bytes(Array(Byte)) | Reads binary content of a file if it exists |
+| WriteByteFile | Path(String), Bytes(Array(Byte)), Append(Bool), Force(Bool) | Success(Bool), Error(String) | Writes binary content to a file, creates the file when not found or appends to it if it exists, you can force to overwrite it |
+| WriteCSVFile | Path(String), Headers(Array(String)), Data(Array(String)), Force(Bool) | Success(Bool), Total(Int) | Writes csv header and body to a text file, delimiter will be ',', creates the file when not found, you can force to overwrite it |
+| ReadCSVFile | Path(String), HeaderFirst(Bool) | Success(Bool), Headers(Array(String)), Data(Array(String)), Total(Int) | Reads csv header and body from a text file if it exists, delimiter must be ',' |
 
 <br>
 
-# Network
+### File System
 
-These nodes allows you to encode/decode content from/to base64
+![file-system](./assets/node6hd.png)
+
+_Be carefull using these nodes, you are accessing the file system of the user's computer, ensure your code is working as intended before shipping_
+
+_Make sure you have asked the user permission to access their file system, on some OS read/write restrictions might occur_
+
+**FCustomNodeStat** is a struct used to read file system node informations like IsDirectory, IsReadOnly, CreationTime, ModificationTime, LastAccessTime, FileSize
+
+| Node | Inputs | Outputs | Note |
+| ---- | ------ | ------- | ---- |
+| IsFile | Path(String) | Success(Bool) | Checks whether a path points to a valid file |
+| IsDirectory | Path(String) | Success(Bool) | Checks whether a path points to a valid directory |
+| IsValidFilename | Filename(String) | Success(Bool) | Checks whether a filename is valid and can be used on this file system, does not hit the disk |
+| IsValidPath | Path(String) | Success(Bool) | Checks whether a path is valid and can be used on this file system, does not hit the disk |
+| ValidateFilename | Filename(String) | Result(Bool), ValidName(String) | Sanitizes a filename to be used on the file system, does not hit the disk |
+| SetReadOnlyFlag | Path(String), Flag(Bool) | Result(Bool) | Sets the read only property on a file, if the file system supports it |
+| GetReadOnlyFlag | Path(String) | Result(Bool) | Gets the read only property on a file, if the file system supports it |
+| GetFileSize | Path(String) | Size(Int64) | Gets the size in bytes of a file on the file system |
+| ListDirectory | Path(String), Pattern(String), ShowFile(Bool), ShowDirectory(Bool), Recursive(Bool) | Result(Bool), Nodes(Array(String)) | Lists all nodes on that path, file or directory, if pattern (regex) is not empty, returns only the one that matches it, can search recursively |
+| MakeDirectory | Path(String), Recursive(Bool) | Result(Bool) | Creates new directory, can work recursively to create a directory tree |
+| RemoveDirectory | Path(String), Recursive(Bool) | Result(Bool) | Removes a directory, if it is not empty then check the recursive option |
+| CopyDirectory | Source(String), Dest(String) | Result(Bool) | Copies the content of a directory to a new destination, overwrites existing content |
+| MoveDirectory | Source(String), Dest(String) | Result(Bool) | Moves the content of a directory to a new destination, overwrites existing content |
+| NodeStats | Path(String) | Result(Bool), Stats(FCustomNodeStat) | Returns information about an existing node |
+| RemoveFile | Path(String) | Result(Bool) | Removes a file from the file system if it exists |
+| CopyFile | Source(String), Dest(String), Force(Bool) | Result(Bool) | Copies a file to a new destination |
+| MoveFile | Source(String), Dest(String), Force(Bool) | Result(Bool) | Moves a file to a new destination |
+| RenameFile | Path(String), NewName(String) | Result(Bool) | Renames an existing file |
+| PathParts | Path(String) | PathPart(String), BasePart(String), ExtensionPart(String), Filename(String) | Returns the different parts of path, does not hit the disk |
+
+<br>
+
+### Network
 
 ![network](./assets/node3hd.png)
 
-    Note: These nodes can be useful to send content on the network (image,text, file)
+_These nodes allows you to encode/decode content to send it on the network (image,text,file)_
 
 | Node | Inputs | Outputs | Note |
 | ---- | ------ | ------- | ---- |
-| StrToBase64 | Source(String) | Result(String) | Encodes a string to a base64 string |
-| StrFromBase64 | Base64Str(String) | Success(Bool), Result(String) | Decodes a string from a base64 string |
-| BytesToBase64 | Source(Array(Byte)) | Result(String) | Encodes binary content to a base64 string |
-| BytesFromBase64 | Base64Str(String) | Success(Bool), Result(Array(Byte)) | Decodes binary content from a base64 string |
+| BytesToBase64 | Bytes(Array(Byte)) | Result(String) | Encodes binary data into a base64 string |
+| BytesFromBase64 | Source(String) | Success(Bool), Out(Array(Byte)) | Decodes a base64 string into binary data |
  
 <br>
 
-# CSV
+### CSV
  
 ![csv](./assets/node5hd.png)
 
 | Node | Inputs | Outputs | Note |
 | ---- | ------ | ------- | ---- |
-| StringToCSV | Content(String), HeaderFirst(Bool) | Success(Bool), Headers(Array(String)), Data(Array(String)), Total(Int) | Extracts headers, data from a CSV string, delimiter must be ',' |
-| CSVToString | Headers(Array(String)), Data(Array(String)) | Success(Bool), Result(String), Total(Int) | Converts headers, data array into a CSV string, delimiter will be ',' |
+| StringToCSV | Content(String), HeaderFirst(Bool) | Success(Bool), Headers(Array(String)), Data(Array(String)), Total(Int) | Extracts header, body from csv string, delimiter must be ',' |
+| CSVToString | Headers(Array(String)), Data(Array(String)) | Success(Bool), Result(String), Total(Int) | Creates a csv string with header and body data, delimiter will be ',' |
 
 <br>
 
-# Serialization
-
-![Serialization](./assets/node4hd.png)
-
-    Do not use fields with whitespaces or special characters in your structures, they will get serialized but you won't be able to deserialize them!
-
-    Note v1.2 : You can now provide (map, array, set, object, struct) and it will get (de)serialized, do not use scalar types like string, numeric, boolean...
-    
-    Note v1.1 and minor : Please provide only a struct (not an array of struct, a map of struct or a set of struct) to these functions, you can put maps, sets, arrays into the struct you wish to export, it will work, you can also put any other object, it will get serialized and when deserializing the object will be created and available as expected
-
-| Node | Inputs | Outputs | Note |
-| ---- | ------ | ------- | ---- |
-| StructToXML | InStruct(AnyStruct) | Success(Bool), Xml(String) |  Converts any type of struct into an XML string |
-| XMLToStruct | Xml(String), OutStruct(AnyStruct) | Success(Bool) | Converts an XML string back into the input struct provided, returns whether the parsing was successfully carried |
-| StructToJson | InStruct(AnyStruct) | Success(Bool), Json(String) | Converts any type of struct into a JSON string |
-| JsonToStruct | Json(String), OutStruct(AnyStruct) | Success(Bool) | Converts a JSON string back into the input struct provided, returns whether the parsing was successfully carried |
-
-<br>
-
-# File system
-
-![file-system](./assets/node6hd.png)
-
-    Note: Be carefull using these nodes, you are accessing the file system of the user's computer, ensure your code is working as intended before shipping
-
-| Node | Inputs | Outputs | Note |
-| ---- | ------ | ------- | ---- |
-| IsFile | Path(String) | Success(Bool) | Checks whether a path is a valid file |
-| IsDirectory | Path(String) | Success(Bool) | Checks whether a path is a valid directory |
-| IsValidFilename | Filename(String) | Success(Bool) | Checks whether a filename is valid and can be used on this file system, do not hit the disk |
-| ValidateFilename | Filename(String) | Result(Bool), ValidName(String) | Sanitizes a filename to be used on the file system, do not hit the disk |
-| SetReadOnlyFlag | Path(String), Flag(Bool) | Result(Bool) | Sets the read only property on a file, if the file system supports it |
-| GetReadOnlyFlag | Path(String) | Result(Bool) | Gets the read only property on a file, if the file system supports it |
-| GetFileSize | Path(String) | Size(Int64) | Gets the size of a file on the file system in bytes |
-| ListDirectory | Path(String), Pattern(String), ShowFile(Bool), ShowDirectory(Bool), Recursive(Bool) | Result(Bool), Nodes(Array(String)) | Lists all nodes on that path, file or directory, if pattern (regex) is not empty, returns only the one that matches it, can search recursively |
-| MakeDirectory | Path(String), Recursive(Bool) | Result(Bool) | Creates a new directory, can work recursively |
-| RemoveDirectory | Path(String), Recursive(Bool) | Result(Bool) | Removes a directory, if it is not empty, check the recursive option |
-| CopyDirectory | Source(String), Dest(String) | Result(Bool) | Copies the content of a directory to a destination path, overwrites existing content |
-| MoveDirectory | Source(String), Dest(String) | Result(Bool) | Moves the content of a directory to a destination path, overwrites existing content |
-| NodeStats | Path(String) | Result(Bool), Stats(FCustomNodeStat) | Returns the stats of a node if it exists |
-| RemoveFile | Path(String) | Result(Bool) | Removes a file from the file system |
-| CopyFile | Source(String), Dest(String), Force(Bool) | Result(Bool) | Copies a file to a destination path |
-| MoveFile | Source(String), Dest(String), Force(Bool) | Result(Bool) | Moves a file to a destination path |
-| RenameFile | Path(String), Name(String) | Result(Bool) | Renames a file |
-| PathParts | Path(String) | PathPart(String), BasePart(String), ExtensionPart(String), Filename(String) | Returns the different parts of path, do not hit the disk |
-
-<br>
-
-# Screenshot
-
-![Screenshot](./assets/node7hd.png)
-
-| Node | Inputs | Outputs | Note |
-| ---- | ------ | ------- | ---- |
-| TakeScreenShot | Filename(String), PrefixTimestamp(Bool), ShowUI(Bool) | Result(Bool), Path(String) | Take a screenshot from current the view and saves it in the default screenshot folder and return the path |
-| LoadScreenShot | Path(String) | Result(Bool), Screenshot(Texture2D) | Loads a screenshot from a path into a Texture2D, do not use this right after takescreenshot because the file might not be already written on disk, use the async node following |
-| TakeScreenshot | Filename(String), PrefixTimestamp(Bool), ShowUI(Bool) | OnCompleted(Texture2D, String), OnFailed() | Async node to take screenshot and return a texture with the actual screenshot and path on completion |
-
-<br>
-
-# Datatable
+### Datatable
 
 ![Datatable](./assets/node8hd.png)
 
-    Note: You need to know the correct row struct in order to reimport the datatable content correctly
+_You need to know the correct row struct in order to reimport the datatable content correctly_
 
-    Do not use fields with withespaces or special characters in your structures, they will get exported but you won't be able to import them back !
+_Do not use fields with withespaces or special characters in your structures, they will get exported but you won't be able to import them back_
 
 | Node | Inputs | Outputs | Note |
 | ---- | ------ | ------- | ---- |
-| DataTableToCSV | Table(DataTable) | Result(Bool), Output(String) | Converts a datatable to a CSV string |
-| CSVToDataTable | Input(String), RowStruct(AnyStruct) | Result(Bool), Table(DataTable) | Converts a CSV string to datatable using the specified struct as the row model | 
-| DataTableToJSON | Table(DataTable) | Result(Bool), Output(String) | Converts a datatable to a JSON string |
-| JSONToDataTable | Input(String), RowStruct(AnyStruct) | Result(Bool), Table(DataTable) | Converts a JSON string to a datatable using the specified struct as the row model |
+| DataTableToCSV | Table(DataTable) | Result(Bool), Output(String) | Exports a datatable to a csv string |
+| CSVToDataTable | CSV(String), Struct(ScriptStruct) | Success(Bool), Table(DataTable) | Imports a csv string into a datatable using the specified row struct as model | 
+| DataTableToJSON | Table(DataTable) | Result(Bool), Output(String) | Exports a datatable to json string |
+| JSONToDataTable | JSON(String), Struct(ScriptStruct) | Success(Bool), Table(DataTable) | Imports a json string into a datatable using the specified row struct as model |
 
 <br>
 
-# Config
+### Config
 
 ![Config](./assets/node9hd.png)
 
-    Note: These nodes helps to read/write configuration files (*.ini), you can pass the following variables to these function (Bool, Int, Double, Float, String, Array(String), Rotator, Vector, LinearColor, Vector4, Vector2D) anything else will fail, keep in mind that a restart of the engine/game is needed for these changes to be taken into account !
+_These nodes helps to read/write configuration files (*.ini), you can pass the following variables to these function (Bool, Int, Double, Float, String, Array(String), Rotator, Vector, LinearColor, Vector4, Vector2D), everything else will fail, keep in mind that a restart of the engine/game is needed for these changes to take effect_
 
 | Node | Inputs | Outputs | Note |
 | ---- | ------ | ------- | ---- |
-| ReadConfig | Filepath(String), Section(String), Key(String), SingleLineArrayRead(Bool), OutValue(AnyStruct) | Result(Bool) | Reads a config file and extracts the section->key value into OutValue (can be any type mentioned earlier), check SingleLineArrayRead if you know the value is an array on a single line in the file, else uncheck it |
-| WriteConfig | Filepath(String), Section(String), Key(String), SingleLineArrayWrite(Bool), Value(AnyStruct) | Result(Bool) | Write a config file value at the section->key, creates the file if not found, check SingleLineArrayWrite to write an array on a single line instead of multiple lines |
-| RemoveCongig | Filepath(String), Section(String), Key(String) | Result(Bool) | Removes the value associated with section->key in the file |
+| ReadConfig | Filepath(String), Section(String), Key(String), SingleLineArrayRead(Bool), OutValue(AnyStruct), LoadFromDisk(Bool) | Success(Bool) | Reads a config file and extracts the section->key value into OutValue (can be any type mentionned earlier), check SingleLineArrayRead if you know the value is an array on a single line in the file else uncheck it, check LoadFromDisk if you want to read file content otherwise cache content will be accessed |
+| WriteConfig | Filepath(String), Section(String), Key(String), SingleLineArrayWrite(Bool), Value(AnyStruct), WriteToDisk(Bool) | Result(Bool) | Writes a config file value at the section->key, check SingleLineArrayWrite to write an array on a single line instead of multiple lines, check WriteToDisk to creates the file else cache will be updated |
+| RemoveCongig | Filepath(String), Section(String), Key(String), WriteToDisk(Bool) | Result(Bool) | Removes the value associated with section->key, check WriteToDisk to update file else cache will be updated |
+
+<br>
+
+### Screenshot
+
+![Screenshot](./assets/node7hd.png)
+
+_You can take a screenshot with or without any user interface, with or without HDR, with or without a custom camera POV, check the tooltip for more details_
+
+**FFileHelperScreenshotActionOptions** is a struct used to provide options for the screenshot like Filename(String), PrefixTimestamp(Bool), ShowUI(Bool), WithHDR(Bool), CustomCameraActor(CameraActor)
+
+| Node | Inputs | Outputs | Note |
+| ---- | ------ | ------- | ---- |
+| TakeScreenshot | Filename(String), Options(FFileHelperScreenshotActionOptions) | OnCompleted(Texture, String), OnFailed() | Async node to take a screenshot with various options, returns a texture with the actual screenshot and path on completion |
+| LoadScreenshot | FilePath(String) | Result(Texture) | Loads a texture from a file if it exists, check if the output is valid before usage |
