@@ -8,7 +8,7 @@
 
 - UE plugin handling files operations on various platforms 
 - Handle text/binary files on the local file system
-- Allows you to read/write .ini configuration files
+- Allows you to read/write .ini configuration files and cache memory
 - Allows you to export/import a datatable from/to JSON or CSV
 - Allows to take screenshots, save and load them into textures
 - It exposes easy to use blueprint functions to handle files in your project
@@ -162,13 +162,22 @@ _Do not use fields with withespaces or special characters in your structures, th
 
 ![Config](./assets/node9hd.png)
 
-_These nodes helps to read/write configuration files (*.ini), you can pass the following variables to these function (Bool, Int, Double, Float, String, Array(String), Rotator, Vector, LinearColor, Vector4, Vector2D), everything else will fail, keep in mind that a restart of the engine/game is needed for these changes to take effect_
+_These nodes helps to read/write configuration files (*.ini) and cache, you can pass the following variables to these function (Bool, Int, Double, Float, String, Array(String), Rotator, Vector, Color, Vector4, Vector2D), everything else will fail, if you update editor configuration files, keep in mind that a restart of the engine/game may be needed for these changes to take effect. To avoid disk I/O, the engine loads configurations files into memory when they are needed or on startup, and writes memory to disk during shutdown. These following functions allow you to manipulate the cache directly, some of these functions perform disk I/O on request but most do not and directly update the cache in memory, keep that in mind._
 
 | Node | Inputs | Outputs | Note |
 | ---- | ------ | ------- | ---- |
-| ReadConfig | Filepath(String), Section(String), Key(String), SingleLineArrayRead(Bool), OutValue(AnyStruct), LoadFromDisk(Bool) | Success(Bool) | Reads a config file and extracts the section->key value into OutValue (can be any type mentionned earlier), check SingleLineArrayRead if you know the value is an array on a single line in the file else uncheck it, check LoadFromDisk if you want to read file content otherwise cache content will be accessed |
-| WriteConfig | Filepath(String), Section(String), Key(String), SingleLineArrayWrite(Bool), Value(AnyStruct), WriteToDisk(Bool) | Result(Bool) | Writes a config file value at the section->key, check SingleLineArrayWrite to write an array on a single line instead of multiple lines, check WriteToDisk to creates the file else cache will be updated |
-| RemoveCongig | Filepath(String), Section(String), Key(String), WriteToDisk(Bool) | Result(Bool) | Removes the value associated with section->key, check WriteToDisk to update file else cache will be updated |
+| CreateConfig | Filepath(String), MakeTransient(Bool) | Result(Bool) | Creates a config cache based on a filepath, if cache exists nothing will happen, if file exists on disk it will be loaded into cache, if file does not exists then a config cache will be created for it, MakeTransient will not create/save any file when SaveConfig is called or during engine shutdown |
+| ReloadConfig | Filepath(String) | Result(Bool) | Reloads an existing config cache from disk again, config cache should exist first, use CreateConfig if needed first, similar to import |
+| SaveConfig | Filepath(String) | Result(Bool) | Saves existing config from cache memory to disk, instead of waiting engine shutdown to do so, similar to export, this will not work for transient config |
+| ClearConfig | Filepath(String) | Result(Bool) | Clears an existing config cache from memory, data can be lost if cache was not written to disk first (no IO) |
+| IsConfigLoaded | Filepath(String) | Result(Bool) | Checks whether a file was loaded into memory config cache (no IO) |
+| IsConfigTransient | Filepath(String) | Result(Bool) | Checks whether a config cache is marked as transient and will not get saved (no IO) |
+| ReadConfigKey | Filepath(String), Section(String), Key(String), SingleLineArrayRead(Bool), OutValue(AnyStruct) | Success(Bool) | Reads from an existing config cache (no IO) and extracts the section->key value into OutValue (can be any type mentionned earlier), check SingleLineArrayRead if you know the value is an array on a single line in the file else uncheck it |
+| WriteConfigKey | Filepath(String), Section(String), Key(String), SingleLineArrayWrite(Bool), Value(AnyStruct) | Result(Bool) | Writes to an existing config cache (no IO) the value at the section->key, check SingleLineArrayWrite to write an array on a single line instead of multiple lines |
+| RemoveConfigKey | Filepath(String), Section(String), Key(String) | Result(Bool) | Removes a specific key in a section from an existing config cache (no IO) |
+| RemoveConfigSection | Filepath(String), Section(String) | Result(Bool) | Removes a specific section from an existing config cache (no IO) |
+| GetConfigSections | Filepath(String) | Sections(Array(String)) | Gets all sections from an exiting config cache (no IO) |
+| GetConfigSectionKeys | Filepath(String), Section(String) | Keys(Array(Name)) | Gets all keys from an exiting config cache section (no IO) |
 
 <br>
 
