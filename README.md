@@ -167,11 +167,11 @@ _These nodes helps to read/write configuration files (*.ini) and cache, you can 
 | Node | Inputs | Outputs | Note |
 | ---- | ------ | ------- | ---- |
 | CreateConfig | Filepath(String), MakeTransient(Bool) | Result(Bool) | Creates a config cache based on a filepath, if cache exists nothing will happen, if file exists on disk it will be loaded into cache, if file does not exists then a config cache will be created for it, MakeTransient will not create/save any file when SaveConfig is called or during engine shutdown |
-| ReloadConfig | Filepath(String) | Result(Bool) | Reloads an existing config cache from disk again, config cache should exist first, use CreateConfig if needed first, similar to import |
+| ReloadConfig | Filepath(String) | Result(Bool) | Reloads an existing config cache from disk again, config cache should exist first, use CreateConfig if needed first, similar to import, data can be lost if cache has changes since they will be overridden with disk content |
 | SaveConfig | Filepath(String) | Result(Bool) | Saves existing config from cache memory to disk, instead of waiting engine shutdown to do so, similar to export, this will not work for transient config |
 | ClearConfig | Filepath(String) | Result(Bool) | Clears an existing config cache from memory, data can be lost if cache was not written to disk first (no IO) |
 | IsConfigLoaded | Filepath(String) | Result(Bool) | Checks whether a file was loaded into memory config cache (no IO) |
-| IsConfigTransient | Filepath(String) | Result(Bool) | Checks whether a config cache is marked as transient and will not get saved (no IO) |
+| IsConfigTransient | Filepath(String) | Result(Bool) | Checks whether a config cache is marked as transient and will not get saved on shutdown or with SaveConfig (no IO) |
 | ReadConfigKey | Filepath(String), Section(String), Key(String), SingleLineArrayRead(Bool), OutValue(AnyStruct) | Success(Bool) | Reads from an existing config cache (no IO) and extracts the section->key value into OutValue (can be any type mentionned earlier), check SingleLineArrayRead if you know the value is an array on a single line in the file else uncheck it |
 | WriteConfigKey | Filepath(String), Section(String), Key(String), SingleLineArrayWrite(Bool), Value(AnyStruct) | Result(Bool) | Writes to an existing config cache (no IO) the value at the section->key, check SingleLineArrayWrite to write an array on a single line instead of multiple lines |
 | RemoveConfigKey | Filepath(String), Section(String), Key(String) | Result(Bool) | Removes a specific key in a section from an existing config cache (no IO) |
